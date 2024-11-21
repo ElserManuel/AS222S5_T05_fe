@@ -2,9 +2,8 @@
   "name": "gorseia",
   "version": "0.0.0",
   "scripts": {
-    "test:coverage": "ng test --code-coverage"
+    "test:coverage": "ng test --code-coverage",
     "ng": "ng",
-    "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -43,6 +42,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "sonarqube-scanner": "^4.2.5",
     "typescript": "~5.4.2"
   }
 }
