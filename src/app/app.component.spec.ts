@@ -1,22 +1,24 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FormsModule } from '@angular/forms'; // Importa FormsModule si usas ngModel
 import { AppComponent } from './app.component';
 import { QueryRecordsComponent } from './components/query-records/query-records.component';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        FormsModule // Asegúrate de incluir FormsModule
       ],
       declarations: [
         AppComponent,
         QueryRecordsComponent
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      // Puedes eliminar CUSTOM_ELEMENTS_SCHEMA si no lo necesitas
+      // schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   });
 
