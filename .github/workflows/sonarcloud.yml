@@ -2,7 +2,7 @@ name: Build, Analyze, and Dockerize
 on:
   push:
     branches:
-      - develop
+      - devolp
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
