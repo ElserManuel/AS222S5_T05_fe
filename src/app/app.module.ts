@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -35,8 +35,6 @@ import { MatDialogModule } from '@angular/material/dialog';
     QueryRecordsComponent
   ],
   imports: [
-    // Core Modules
-    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule,
@@ -70,6 +68,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     provideClientHydration(),
     provideAnimationsAsync()
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
