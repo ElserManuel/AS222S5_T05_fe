@@ -1,7 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FormsModule } from '@angular/forms'; // Importa FormsModule si usas ngModel
+import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card'; // Importar módulo de Material Card
+import { HttpClientModule } from '@angular/common/http'; // Importar HttpClientModule
+
 import { AppComponent } from './app.component';
 import { QueryRecordsComponent } from './components/query-records/query-records.component';
 
@@ -11,14 +14,14 @@ describe('AppComponent', () => {
       imports: [
         RouterTestingModule,
         HttpClientTestingModule,
-        FormsModule // Asegúrate de incluir FormsModule
+        HttpClientModule, // Agregar HttpClientModule
+        FormsModule,
+        MatCardModule // Agregar módulo de Material Card
       ],
       declarations: [
         AppComponent,
         QueryRecordsComponent
-      ],
-      // Puedes eliminar CUSTOM_ELEMENTS_SCHEMA si no lo necesitas
-      // schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      ]
     }).compileComponents();
   });
 
