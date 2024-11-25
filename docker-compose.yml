@@ -1,0 +1,21 @@
+version: '3.8'  # Mantén esta línea si quieres especificar la versión
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: angular-frontend
+    ports:
+      - "80:80"  # Mapea el puerto 80 del contenedor al puerto 80 de la máquina local
+    restart: always  # Reinicia el contenedor automáticamente si se detiene
+    networks:
+      - app-network
+    # Volúmenes opcionales para desarrollo
+    # volumes:
+    #   - ./src:/app/src
+    #   - ./nginx.conf:/etc/nginx/nginx.conf
+
+networks:
+  app-network:
+    driver: bridge  # Usa el driver de red por defecto
