@@ -9,7 +9,8 @@ jobs:
   build_and_dockerize:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -23,7 +24,7 @@ jobs:
 
       - name: Run Tests
         run: |
-          export CHROME_BIN=$(which chrome)
+          export CHROME_BIN=$(which google-chrome) # Cambiar a google-chrome para asegurar compatibilidad
           npm run test:coverage -- --browsers=ChromeHeadless
 
       - name: SonarCloud Analysis
