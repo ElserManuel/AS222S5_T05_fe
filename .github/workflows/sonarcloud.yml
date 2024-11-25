@@ -6,33 +6,31 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
-  sonarcloud:
-    name: SonarQube Cloud
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      
+          fetch-depth: 0
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
+      - name: Run tests
+        uses: browser-actions/setup-chrome@v1
+
       - name: Run tests with coverage
-        run: npm run test:coverage
-      
+        run: |
+          export CHROME_BIN=$(which chrome)
+          npm run test:coverage -- --browsers=ChromeHeadless
+
       - name: SonarQube Cloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: .
-          args: >
-            -Dsonar.sources=src
-            -Dsonar.tests=src
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
