@@ -8,12 +8,11 @@ import { QueryRecord } from '../model/query';
   providedIn: 'root'
 })
 export class QueryRecordService {
-  private baseUrl = 'https://fantastic-space-succotash-6746996vqw724jr4-8085.app.github.dev/api';
-  private timeoutDuration = 30000; // 30 segundos timeout
+  private baseUrl = 'http://localhost:8081/api';
+  private timeoutDuration = 15000; // 15 segundos timeout
 
   constructor(private http: HttpClient) {}
 
-  // Headers comunes
   private getHeaders(contentType: 'text/plain' | 'application/json' = 'text/plain'): HttpHeaders {
     return new HttpHeaders({
       'Content-Type': contentType,
@@ -21,30 +20,32 @@ export class QueryRecordService {
     });
   }
 
-  // Manejo de errores mejorado
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Ocurrió un error en la solicitud';
 
     if (error.error instanceof ErrorEvent) {
-      // Error del lado del cliente
       errorMessage = `Error del cliente: ${error.error.message}`;
-    } else if (error.status === 0) {
-      // Error de conexión
-      errorMessage = 'No se pudo conectar con el servidor. Por favor, verifique su conexión.';
-    } else if (error.status === 404) {
-      errorMessage = 'El recurso solicitado no fue encontrado.';
-    } else if (error.status === 500) {
-      errorMessage = 'Error interno del servidor.';
     } else {
-      errorMessage = `Error del servidor: ${error.status}, mensaje: ${error.message}`;
+      switch (error.status) {
+        case 0:
+          errorMessage = 'No se pudo conectar con el servidor. Verifique su conexión.';
+          break;
+        case 404:
+          errorMessage = 'El recurso solicitado no fue encontrado.';
+          break;
+        case 500:
+          errorMessage = 'Error interno del servidor.';
+          break;
+        default:
+          errorMessage = `Error del servidor: ${error.status}, mensaje: ${error.message}`;
+          break;
+      }
     }
 
     console.error('Error detallado:', error);
     return throwError(() => new Error(errorMessage));
-
   }
 
-  // Ejecutar consulta
   executeQuery(query: string): Observable<string> {
     return this.http.post<string>(`${this.baseUrl}/groq/query`, query, {
       headers: this.getHeaders('text/plain'),
@@ -55,7 +56,6 @@ export class QueryRecordService {
     );
   }
 
-  // Ejecutar y almacenar consulta
   executeQueryAndStore(query: string): Observable<QueryRecord> {
     return this.http.post<QueryRecord>(`${this.baseUrl}/groq/query-and-store`, query, {
       headers: this.getHeaders('text/plain')
@@ -66,7 +66,6 @@ export class QueryRecordService {
     );
   }
 
-  // Obtener todos los registros activos
   getAllQueryRecords(): Observable<QueryRecord[]> {
     return this.http.get<QueryRecord[]>(`${this.baseUrl}/query-records`).pipe(
       timeout(this.timeoutDuration),
@@ -78,7 +77,6 @@ export class QueryRecordService {
     );
   }
 
-  // Obtener registro por ID (solo activos)
   getQueryRecordById(id: string): Observable<QueryRecord | null> {
     return this.http.get<QueryRecord>(`${this.baseUrl}/query-records/${id}`).pipe(
       timeout(this.timeoutDuration),
@@ -90,7 +88,6 @@ export class QueryRecordService {
     );
   }
 
-  // Borrado lógico
   softDeleteQueryRecord(id: string): Observable<QueryRecord> {
     return this.http.patch<QueryRecord>(
       `${this.baseUrl}/query-records/${id}/status`,
@@ -103,7 +100,6 @@ export class QueryRecordService {
     );
   }
 
-  // Restaurar registro
   restoreQueryRecord(id: string): Observable<QueryRecord> {
     return this.http.patch<QueryRecord>(
       `${this.baseUrl}/query-records/${id}/status`,
@@ -116,7 +112,6 @@ export class QueryRecordService {
     );
   }
 
-  // Obtener todos los registros (incluyendo inactivos)
   getAllQueryRecordsIncludingInactive(): Observable<QueryRecord[]> {
     return this.http.get<QueryRecord[]>(`${this.baseUrl}/query-records/all`).pipe(
       timeout(this.timeoutDuration),
@@ -125,7 +120,6 @@ export class QueryRecordService {
     );
   }
 
-  // Cambiar estado de registro
   toggleStatus(id: string, newStatus: 'A' | 'I'): Observable<QueryRecord> {
     return this.http.patch<QueryRecord>(
       `${this.baseUrl}/query-records/${id}/status`,
@@ -138,7 +132,6 @@ export class QueryRecordService {
     );
   }
 
-  // Procesar registro de consulta
   private processQueryRecord(record: QueryRecord): QueryRecord {
     return {
       ...record,
@@ -147,7 +140,6 @@ export class QueryRecordService {
     };
   }
 
-  // Método para verificar la conexión con el servidor
   checkServerConnection(): Observable<boolean> {
     return this.http.get(`${this.baseUrl}/health-check`).pipe(
       timeout(5000), // Timeout más corto para verificación de conexión
